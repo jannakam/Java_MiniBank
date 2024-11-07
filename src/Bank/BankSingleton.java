@@ -31,7 +31,7 @@ public class BankSingleton {
         }
 
         User newUser = new User(username, password);
-        users.add(newUser); // Ensure the new user is added to the list of users
+        users.add(newUser);
         return newUser;
     }
 
@@ -48,6 +48,30 @@ public class BankSingleton {
             }
         }
 
+        return null;
+    }
+
+    // only possible if user is an admin
+    public Employee createEmployee(String username, String password, String ID, String name, String position, double salary, double hourlyRate, String accessCode) {
+        for (User user : users) {
+
+            // check if the provided username is a duplicate
+            if (username.equals(user.getUsername())) {
+                throw new AssertionError("Duplicate username");
+            }
+
+            // check if the person creating the employee account is an admin
+            if (user instanceof Admin) {
+                Admin admin = (Admin) user;
+                if (admin.getAccessCode().equals(accessCode)) {
+                    Employee newEmployee = new Employee(username, password, ID, name, position, salary, hourlyRate);
+                    users.add(newEmployee);
+                    return newEmployee;
+                }
+            }
+        }
+
+        // Return null if no matching admin with correct access code is found
         return null;
     }
 
